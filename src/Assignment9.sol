@@ -2,24 +2,26 @@
 pragma solidity ^0.8.13;
 
 // import Openzeppelin Ownable contract
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 // inherit from Ownable contract 
-contract Assignment9 {
+contract Assignment9 is Ownable {
     // create a public array called `deployedContracts` to store contracts addresses in it 
+    address[] public deployedContracts;
 
     // call Ownable constructor of openzeppelin contract
-    constructor () {
-        
+    constructor () Ownable(msg.sender) {
     }
 
     // @dev Factory to deploy new instances of `SimpleContract`
     // make only the owner is the one who can call this function
-    function createContract() external {
+    function createContract() external onlyOwner  {
         // deploy new instance of SimpleContract
             // Hint: When you create a new instance, do not forget to pass any arbitrary initial value in the constructor
-        
+        SimpleContract newCounter = new SimpleContract();
 
         // push the new deployed instance to deployedContracts array
+        deployedContracts.push(address(newCounter));
     }
 }
 
@@ -27,8 +29,8 @@ contract Assignment9 {
 contract SimpleContract {
     uint256 public value;
 
-    constructor(uint256 _initialValue) {
-        value = _initialValue;
+    constructor() {
+        value = 123;
     }
 
     function setValue(uint256 newValue) external {
